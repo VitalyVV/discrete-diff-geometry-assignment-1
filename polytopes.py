@@ -62,9 +62,15 @@ class Variety():
         if k1 == 0 and k2 == 0:
             return lambda x: f1(x) * f2(x)
         if k1 == 0 and k2 == 1:
-            return lambda x, y: 1/2 * (f1(x) * f2(x, y) + f1(y) * f2(x, y)) 
+            if k1 == 0:
+                return lambda x, y: 1/2 * (f1(x) * f2(x, y) + f1(y) * f2(x, y))
+            else:
+                return lambda x, y: 1 / 2 * (f2(x) * f1(x, y) + f2(y) * f1(x, y))
         if k1 == 0 and k2 == 2:
-            return lambda x, y, z: 1/3 * (f1(x) * f2(x, y, z) + f1(y) * f2(x, y, z) + f1(z) * f2(x, y, z))
+            if k1 == 0:
+                return lambda x, y, z: 1/3 * (f1(x) * f2(x, y, z) + f1(y) * f2(x, y, z) + f1(z) * f2(x, y, z))
+            else:
+                return lambda x, y, z: 1 / 3 * (f2(x) * f1(x, y, z) + f2(y) * f1(x, y, z) + f2(z) * f1(x, y, z))
         if k1 == 1 and k2 == 1:
             return lambda x, y, z: 1/6 * (f1(x, y) * f2(y, z) - f1(y, z) * f2(x, y) + 
                                           f1(y, z) * f2(z, x) - f1(z, x) * f2(y, z) +
@@ -90,25 +96,3 @@ class Variety():
         # Every edge has a pair edge, since no flag can be paired with multiple
         # edges simply divide by 2
         return edges, len(edges) / 2
-
-
-# example tests, there will be more
-sphere = Variety([(3, 2, 1), (2, 3, 0), (1, 0, 3), (0, 1, 2)])
-
-torus = Variety([
-    (1, 0, 3),
-    (1, 3, 2),
-    (2, 3, 6),
-    (3, 4, 6),
-    (4, 0, 6),
-    (1, 6, 0),
-    (2, 6, 5),
-    (1, 5, 6),
-    (2, 5, 0),
-    (3, 0, 5),
-    (5, 4, 3),
-    (1, 4, 5),
-    (1, 2, 4),
-    (2, 0, 4),
-])
-print(Variety([(3,2,1), (2,3,0), (1,0,3),(0,1,2), (6,5,4), (5,6,0), (4,0,6),(0,4,5)]).Euler())
