@@ -66,15 +66,15 @@ class Variety():
         if k1 == 0 and k2 == 0:
             return lambda x: f1(x) * f2(x)
         if k1 == 0 and k2 == 1:
-            return lambda x, y: f1(x) * map(lambda x, y: )
+            return lambda x, y: 1/2 * (f1(x) * f2(x, y) + f1(y) * f2(x, y)) 
         if k1 == 0 and k2 == 2:
-            return lambda x, y, z: f1(x) * f2(x, y, z)**3
+            return lambda x, y, z: 1/3 * (f1(x) * f2(x, y, z) + f1(y) * f2(x, y, z) + f1(z) * f2(x, y, z))
         if k1 == 1 and k2 == 1:
-            return lambda x, y, z: np.linalg.det([f1(x,y), ])
+            return lambda x, y, z: 1/6 * (f1(x, y) * f2(y, z) - f1(y, z) * f2(x, y) + 
+                                          f1(y, z) * f2(z, x) - f1(z, x) * f2(y, z) +
+                                          f1(z, x) * f2(x, y) - f1(x, y) * f2(z, x) )
         if k1 == 1 and k2 == 2:
             return lambda x, y, z: 0
-        if k1 == 2 and k2 == 2:
-            return lambda x, y, z, d: np.cross(f1(x,y,z), f2(x,y,z)) + d
 
 
 
