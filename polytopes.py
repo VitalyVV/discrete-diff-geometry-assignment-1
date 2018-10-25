@@ -20,14 +20,13 @@ class Variety():
             return edge1[0]==edge2[1] and edge2[0]==edge1[1]
 
         edges, n_edges = self.edge_info()
-        traversed_vertices = self.bfs(edges, edges[0][0])
-        vertices = np.unique(self.faces)
         pairs = 0
 
         for i in range(len(edges)):
             for j in range(len(edges)):
                 if is_pair_halfedges(edges[i], edges[j]):
                     pairs += 1
+
 
         is_connected = pairs/2 == n_edges
         for i in range(len(self.faces)):
@@ -37,7 +36,7 @@ class Variety():
                         is_connected = False
                         break
 
-        return is_connected and set(traversed_vertices) == set(vertices)
+        return is_connected and self.Euler() < 3
 
     def Euler(self):
         # Formula missing edges, so find it first
@@ -60,9 +59,6 @@ class Variety():
             return func(x,y,z)==func(x,y,z)
 
     def wedge(self, k1, k2, f1, f2):
-        def bases(k):
-            return math.factorial(3) / (math.factorial(k) * math.factorial(3 - k))
-
         if k1 == 0 and k2 == 0:
             return lambda x: f1(x) * f2(x)
         if k1 == 0 and k2 == 1:
@@ -74,31 +70,12 @@ class Variety():
                                           f1(y, z) * f2(z, x) - f1(z, x) * f2(y, z) +
                                           f1(z, x) * f2(x, y) - f1(x, y) * f2(z, x) )
         if k1 == 1 and k2 == 2:
+            # always zero
             return lambda x, y, z: 0
 
 
 
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-    def bfs(self, edges, v_0):
-        def get_adjaced_vertex(v, edge):
-            return edge[0] if v==edge[1] else edge[1]
-
-        queue = [v_0]
-        marked = [v_0]
-        traversed = [v_0]
-        while len(queue) != 0:
-            t = queue[0]
-            del queue[0]
-            if not t in marked:
-                marked.append(t)
-                traversed.append(t)
-            adjacent_edges = [edge for edge in edges if t in edge]
-            for edge in adjacent_edges:
-                o = get_adjaced_vertex(t, edge)
-                if not o in queue and not o in marked:
-                    queue.append(o)
-        return traversed
-
     def get_all_halfedges(self, f):
         return (f[0], f[1]), (f[1], f[2]), (f[2], f[0])
 
@@ -134,22 +111,4 @@ torus = Variety([
     (1, 2, 4),
     (2, 0, 4),
 ])
-
-
-
-print(sphere.wedge(0,0, lambda x: x, lambda x: -x)(2))
-print(sphere.wedge(0,1, lambda x: x, lambda x,y: y-x)(2,3))
-print(sphere.wedge(0,2, lambda x: x, lambda x,y,z:  x+y+z if (x-y)*(y-z)*(z-x)>0 else -(x+y+z) )(0,1,2))
-print(sphere.wedge(1,1, lambda x,y: x-y, lambda x,y: y-x)(1,2,3))
-# print(sphere.check_form(2, lambda x, y, z: x + y + z if (x - y) * (y - z) * (z - x) > 0 else -(x + y + z)))
-# print(torus.check_form(1, lambda v, w: 1))
-# assert sphere.check() == True
-# print('Torus goes')
-# print(torus.check())
-# print('Shitty surface')
-# print(Variety([(1, 2, 3), (2, 3, 0), (3, 0, 1), (0, 1, 2)]).check())
-# # print('Not really one surface')
-# # assert Variety([(2, 3, 0), (5, 1, 6), (4, 5, 1), (1, 5, 4),(0, 3, 2)]).check() == False
-# assert Variety([(1, 2, 0), (1, 0, 2)]).check() == False
-# assert Variety(
-#     [(3, 2, 1), (2, 3, 0), (1, 0, 3), (0, 1, 2), (6, 5, 4), (5, 6, 0), (4, 0, 6), (0, 4, 5)]).check() == False
+print(Variety([(3,2,1), (2,3,0), (1,0,3),(0,1,2), (6,5,4), (5,6,0), (4,0,6),(0,4,5)]).Euler())
