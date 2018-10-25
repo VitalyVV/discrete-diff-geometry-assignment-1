@@ -1,4 +1,5 @@
 import numpy as np
+import math
 
 
 class Variety():
@@ -59,12 +60,15 @@ class Variety():
             return func(x,y,z)==func(x,y,z)
 
     def wedge(self, k1, k2, f1, f2):
+        def bases(k):
+            return math.factorial(3) / (math.factorial(k) * math.factorial(3 - k))
+
         if k1 == 0 and k2 == 0:
             return lambda x: f1(x) * f2(x)
         if k1 == 0 and k2 == 1:
-            return lambda x, y: f1(x) * f2(x, y)
+            return lambda x, y: f1(x) * map(lambda x, y: )
         if k1 == 0 and k2 == 2:
-            return lambda x, y, z: np.linalg.det([f1(x), 0, 0], [f2(x, y, z)])
+            return lambda x, y, z: f1(x) * f2(x, y, z)**3
         if k1 == 1 and k2 == 1:
             return lambda x, y, z: np.linalg.det([f1(x,y), ])
         if k1 == 1 and k2 == 2:
